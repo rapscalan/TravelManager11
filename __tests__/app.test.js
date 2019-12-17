@@ -87,6 +87,21 @@ describe('app routes', () => {
         });
       });
   });
+
+  it('updates a trip by id', () => {
+    return request(app)
+      .patch(`/api/v1/trips/${tripForTest._id}`)
+      .send({ name: 'Italy' })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: tripForTest._id.toString(),
+          name: 'Italy',
+          beginDate: expect.any(String),
+          endDate: expect.any(String),
+          __v: 0
+        });
+      });
+  });
   
   it('creates an itineraryItem', () => {
     return request(app)
