@@ -5,6 +5,7 @@ const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
 const Trip = require('../lib/models/Trip');
+const ItineraryItem = require('../lib/models/ItineraryItem');
 
 describe('app routes', () => {
   beforeAll(() => {
@@ -15,12 +16,20 @@ describe('app routes', () => {
     return mongoose.connection.dropDatabase();
   });
   let tripForTest = null;
+  let itineraryForTest = null;
 
   beforeEach(async() => {
     tripForTest = JSON.parse(JSON.stringify(await Trip.create({
-      name: 'Paris',
+      name: 'France',
       beginDate: new Date('2019-12-28T00:00:00'),
       endDate: new Date('2019-12-30T00:00:00')
+    })));
+    itineraryForTest = JSON.parse(JSON.stringify(await ItineraryItem.create({
+      event: 'Eiffel Tower',
+      tripId: tripForTest._id,
+      beginTime: new Date('2019-12-29T18:30:00'),
+      endTime: new Date('2019-12-29T19:00:00'),
+      eventCity: 'Paris'
     })));
   });
 
@@ -54,7 +63,8 @@ describe('app routes', () => {
         tripId: tripForTest._id,
         event: 'Eiffel Tower',
         beginTime: new Date('2019-12-28T18:00:00'),
-        endTime: new Date('2019-12-20T18:30:00')
+        endTime: new Date('2019-12-20T18:30:00'),
+        eventCity: 'Paris'
       })
       .then(res => {
         expect(res.body).toEqual({
@@ -63,6 +73,23 @@ describe('app routes', () => {
           event: 'Eiffel Tower',
           beginTime: expect.any(String),
           endTime: expect.any(String),
+          eventCity: 'Paris',
+          __v: 0
+        });
+      });
+  });
+
+  it('deletes a itinerary item by id', () => {
+    return request(app)
+      .delete(`/api/v1/itineraryItems/${itineraryForTest._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.any(String),
+          tripId: tripForTest._id.toString(),
+          beginTime: expect.any(String),
+          endTime: expect.any(String),
+          event: 'Eiffel Tower',
+          eventCity: 'Paris',
           __v: 0
         });
       });
