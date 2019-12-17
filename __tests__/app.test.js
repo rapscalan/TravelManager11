@@ -30,8 +30,8 @@ describe('app routes', () => {
         expect(res.body).toEqual({
           _id: expect.any(String),
           name: 'Paris',
-          beginDate: expect.toEqual('2019-12-20T08:00:00.000Z'),
-          endDate: expect.toEqual('2019-12-27T08:00:00.000Z'),
+          beginDate: expect.any(String),
+          endDate: expect.any(String),
           __v: 0
         });
       });
