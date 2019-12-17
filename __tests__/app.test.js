@@ -102,6 +102,20 @@ describe('app routes', () => {
         });
       });
   });
+
+  it('deletes a trip by id', () => {
+    return request(app)
+      .delete(`/api/v1/trips/${tripForTest._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: tripForTest._id.toString(),
+          name: expect.any(String),
+          beginDate: expect.any(String),
+          endDate: expect.any(String),
+          __v: 0
+        });
+      });
+  });
   
   it('creates an itineraryItem', () => {
     return request(app)
