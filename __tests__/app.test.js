@@ -24,6 +24,11 @@ describe('app routes', () => {
       beginDate: new Date('2019-12-28T00:00:00'),
       endDate: new Date('2019-12-30T00:00:00')
     })));
+    // tripForTest2 = JSON.parse(JSON.stringify(await Trip.create({
+    //   name: 'Spain',
+    //   beginDate: new Date('2019-12-28T00:00:00'),
+    //   endDate: new Date('2019-12-30T00:00:00')
+    // })));
     itineraryForTest = JSON.parse(JSON.stringify(await ItineraryItem.create({
       event: 'Eiffel Tower',
       tripId: tripForTest._id,
@@ -55,7 +60,21 @@ describe('app routes', () => {
         });
       });
   });
-
+  it('gets all trips', async() => {
+    const trips = await Trip.create([
+      { name: 'England', beginDate: Date.now(), endDate: Date.now() },
+      { name: 'Germany', beginDate: Date.now(), endDate: Date.now() },
+      { name: 'Greece', beginDate: Date.now(), endDate: Date.now() },
+      { name: 'Spain', beginDate: Date.now(), endDate: Date.now() },
+    ]);
+    return request(app)
+      .get('/api/v1/trips')
+      .then(res => {
+        trips.forEach(trip => {
+          expect(res.body).toContainEqual(JSON.parse(JSON.stringify(trip)));
+        });
+      });
+  });
   it('creates an itineraryItem', () => {
     return request(app)
       .post('/api/v1/itineraryItems')
